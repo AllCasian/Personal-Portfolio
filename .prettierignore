@@ -1,0 +1,12 @@
+node_modules/
+.npm-cache-recovery/
+.agents/
+.specify/
+specs/
+.next/
+out/
+coverage/
+playwright-report/
+test-results/
+next-env.d.ts
+package-lock.json

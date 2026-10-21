@@ -1,0 +1,12 @@
+node_modules/
+.npm-cache-recovery/
+.next/
+out/
+build/
+coverage/
+playwright-report/
+test-results/
+*.log
+.env*
+!.env.example
+.vercel/
