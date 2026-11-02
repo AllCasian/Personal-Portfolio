@@ -1,6 +1,6 @@
 # Personal Portfolio
 
-A responsive portfolio foundation built with Next.js App Router, React Server Components, TypeScript, and Tailwind CSS v4. The current scope contains the global page shell, editable Home hero, four primary anchor destinations, and About, Portfolio, and Contact placeholders.
+A responsive personal software engineering portfolio built with Next.js App Router, React Server Components, TypeScript, and Tailwind CSS v4. The current scope contains the global page shell, editable Home hero and About summary, four primary anchor destinations, and Portfolio and Contact placeholders.
 
 ## Requirements
 
@@ -39,10 +39,12 @@ Playwright requires its Chromium browser. Install it once with `npm.cmd exec pla
 
 ## Edit the visible content
 
-- Update `src/content/profile.ts` with verified name, professional focus, introduction, and a valid primary action before publishing.
+- Update `src/content/profile.ts` with a verified full name, broad professional role, concise introduction, and the six About summary fields (education, current experience, interests, general competencies, engineering approach, and professional direction).
+- Keep required values as neutral `Placeholder:` strings until the owner verifies them. Replace each marker only with verified authored information; do not use placeholders to imply facts.
+- The View Projects (`#portfolio`) and Contact Me (`#contact`) actions are fixed UI behavior and are not profile fields.
 - Update `src/content/navigation.ts` only when the approved primary section destinations change.
-- Keep `src/content/sections.ts` aligned with the four supported anchors. The About, Portfolio, and Contact entries are placeholders in Feature 001.
-- Add a portrait only after a confirmed image and its alternative text are available; the current portrait graphic is a deliberate placeholder.
+- Keep `src/content/sections.ts` aligned with the four supported anchors. Portfolio and Contact remain placeholders; About is rendered from the typed profile summary.
+- Add the optional portrait, resume, GitHub, or LinkedIn entry only after its exact content or destination is verified. Use a local portrait and appropriate alternative text; if absent or if the image fails, the decorative fallback remains. Unavailable optional links are omitted.
 
 Do not publish unverified personal claims, contact details, social profiles, project descriptions, or resume links. There are no secrets or private configuration values in the site.
 

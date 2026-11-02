@@ -5,8 +5,8 @@ import { ResponsiveMobileNavigation } from './responsive-mobile-navigation'
 export function SiteHeader() {
   return (
     <header className="site-header content-width">
-      <a href="#home" className="wordmark" aria-label="Your Name, home">
-        <span>YN</span>
+      <a href="#home" className="wordmark" aria-label="Portfolio home">
+        <span aria-hidden="true">P</span>
         <i aria-hidden="true" />
       </a>
       <nav className="desktop-nav" aria-label="Primary">

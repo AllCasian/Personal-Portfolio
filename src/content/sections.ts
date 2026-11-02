@@ -2,7 +2,7 @@ import type { PortfolioSection } from './types'
 
 export const sections = [
   { id: 'home', title: 'Home', state: 'content' },
-  { id: 'about', title: 'About', state: 'placeholder', description: 'About section coming soon.' },
+  { id: 'about', title: 'About', state: 'content' },
   {
     id: 'portfolio',
     title: 'Portfolio',

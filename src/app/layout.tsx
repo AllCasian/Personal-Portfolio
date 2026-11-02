@@ -11,9 +11,9 @@ const inter = localFont({
 })
 
 export const metadata: Metadata = {
-  title: 'Your Name — Software Engineer',
+  title: 'Software Engineering Portfolio',
   description:
-    'A personal software engineering portfolio. Replace this description with a verified introduction.',
+    'A personal portfolio showcasing software engineering work and professional interests.',
 }
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
