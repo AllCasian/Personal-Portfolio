@@ -23,6 +23,7 @@ export default defineConfig([
         fetch: 'readonly',
         process: 'readonly',
         setTimeout: 'readonly',
+        URL: 'readonly',
       },
     },
   },

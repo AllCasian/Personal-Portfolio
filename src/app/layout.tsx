@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import localFont from 'next/font/local'
+import { NavigationEnhancement } from '@/components/layout/navigation-enhancement'
 import './globals.css'
 
 const inter = localFont({
@@ -18,7 +19,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={inter.variable}>
-      <body>{children}</body>
+      <body>
+        {children}
+        <NavigationEnhancement />
+      </body>
     </html>
   )
 }

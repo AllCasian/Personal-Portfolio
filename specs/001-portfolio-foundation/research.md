@@ -7,8 +7,8 @@
 
 ### Next.js App Router and Server Components
 
-- **Decision**: Use the Next.js App Router with React Server Components for the static shell, landing page, hero, placeholder sections, and footer. Isolate interactive behavior in the mobile navigation client boundary.
-- **Rationale**: This aligns with the requested stack and keeps static content out of the browser's JavaScript bundle while retaining a small place for stateful navigation behavior.
+- **Decision**: Use the Next.js App Router with React Server Components for the full page, including navigation. Use same-page anchors, a native modal dialog, and a small client enhancement component that initializes after hydration for active destination state and post-selection focus.
+- **Rationale**: Lighthouse identified unused JavaScript and a late shared-runtime task. Native dialog behavior and a small post-hydration initializer retain the focus trap, Escape behavior, hash/history synchronization, and no-JavaScript links while keeping React-managed attributes unchanged until hydration completes.
 - **Alternatives considered**: Making the page a Client Component would increase client-side work without a user-facing need; a separate backend is unnecessary for a static portfolio foundation.
 - **Source**: [Next.js Server and Client Components](https://nextjs.org/docs/app/getting-started/server-and-client-components)
 
@@ -21,24 +21,24 @@
 
 ### shadcn/ui Accessible Primitives
 
-- **Decision**: Add only the shadcn/ui components needed for this feature. Prefer its accessible dialog primitive for the full-screen mobile navigation when the generated implementation satisfies the interaction contract; otherwise use native dialog behavior and a focused wrapper.
-- **Rationale**: shadcn/ui provides copied, editable components that fit the requested Tailwind v4 direction without requiring an all-or-nothing component library. Its current setup documents Tailwind v4 support.
+- **Decision**: Add only the shadcn/ui components needed for this feature. Use native `<dialog>` for the mobile navigation because its modal focus containment, Escape behavior, and focus restoration meet the interaction contract without a React dialog dependency.
+- **Rationale**: The navigation panel is a small, well-defined interaction. The native primitive passed Playwright checks and supports a server-rendered navigation shell.
 - **Alternatives considered**: A full UI library would add unused code and constrain the visual direction; hand-rolling focus management without a tested primitive adds accessibility risk.
 - **Sources**: [shadcn/ui with Tailwind v4](https://ui.shadcn.com/docs/tailwind-v4), [shadcn/ui Next.js installation](https://ui.shadcn.com/docs/installation/next)
 
 ### Progressive Mobile Navigation Enhancement
 
-- **Decision**: Render useful primary navigation links in server HTML. After hydration, present a menu trigger and full-screen dialog at narrow widths, while retaining desktop links at wider widths. Keep server-rendered links available if JavaScript is disabled.
-- **Rationale**: The spec requires both a full-screen mobile menu and working navigation with JavaScript unavailable. A server-rendered baseline prevents content from being locked behind client-side state.
+- **Decision**: Render primary navigation links and the mobile dialog in server HTML. A small effect-based enhancement enables the trigger, modal behavior, active hash/history state, and post-selection focus at narrow widths after hydration. Keep server-rendered links visible if JavaScript is disabled.
+- **Rationale**: The spec requires a full-screen mobile menu and working navigation when JavaScript is unavailable. Navigation content stays server-rendered; only a small post-hydration effect wires the native dialog and synchronizes current-location state, avoiding React-managed menu state while preserving the no-JavaScript links.
 - **Alternatives considered**: Rendering only a client-controlled hamburger leaves no usable navigation when JavaScript fails; keeping a visible wrapped link row on all mobile widths conflicts with the clarified full-screen pattern.
 - **Source**: [Next.js Server and Client Components](https://nextjs.org/docs/app/getting-started/server-and-client-components)
 
 ### Motion and Reduced Motion
 
-- **Decision**: Use Motion for React only for the mobile panel's purposeful open/close transition. Set a user-respecting reduced-motion policy, and ensure the panel still opens and closes without animation.
-- **Rationale**: Motion is requested, but motion is not required to convey content. The panel interaction has a clear state transition and can be reduced without changing semantics.
-- **Alternatives considered**: Scroll-driven, parallax, or continuously animated effects are unnecessary and conflict with the constitution's usability direction; CSS-only transitions remain suitable for ordinary hover/focus states.
-- **Sources**: [Motion for React reduced-motion hook](https://motion.dev/docs/react-use-reduced-motion), [MotionConfig reduced-motion policy](https://motion.dev/docs/react-motion-config)
+- **Decision**: Use a brief CSS keyframe transition for the native mobile dialog and disable it under `prefers-reduced-motion: reduce`.
+- **Rationale**: This simple open-state animation does not need a motion runtime. CSS preserves the visual feedback while supporting server-rendered navigation, and Playwright verifies the reduced-motion state.
+- **Alternatives considered**: A React motion package and scroll-driven or continuous animation add code without improving this one panel interaction.
+- **Evidence**: The 2026-11-02 Lighthouse reports and resource totals are recorded in `quickstart.md` and `reports/`.
 
 ### Fonts and Images
 
@@ -49,8 +49,8 @@
 
 ### Testing Approach
 
-- **Decision**: Use Vitest and React Testing Library for focused component behavior, Playwright for browser journeys and viewport coverage, and axe checks plus manual accessibility review.
-- **Rationale**: Component tests provide fast feedback on menu semantics and focus behavior; browser tests validate actual responsive layout and interactions. Automated accessibility scans do not cover every keyboard or screen-reader behavior, so manual checks remain required.
+- **Decision**: Use Vitest and React Testing Library for focused server markup and navigation-state behavior, Playwright for browser journeys and viewport coverage, and axe checks plus manual accessibility review.
+- **Rationale**: Component tests provide fast feedback on accessible markup and current-location synchronization; browser tests validate native dialog focus behavior and responsive layout. Automated accessibility scans do not cover every keyboard or screen-reader behavior, so manual checks remain required.
 - **Alternatives considered**: Unit tests alone cannot validate viewport overflow or native browser focus behavior; E2E-only testing is slower and less focused for component-level regressions.
 - **Sources**: [Vitest React Browser testing](https://vitest.dev/api/browser/react), [Playwright auto-retrying assertions](https://playwright.dev/docs/test-assertions)
 

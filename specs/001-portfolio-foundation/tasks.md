@@ -17,7 +17,7 @@ description: "Dependency-ordered implementation tasks for Portfolio Foundation"
 **Purpose**: Create the app scaffold and establish development and verification commands.
 
 - [X] T001 Scaffold a single Next.js App Router application with `src/`, React, TypeScript strict mode, and the root route in `package.json`, `tsconfig.json`, `next.config.ts`, `src/app/layout.tsx`, and `src/app/page.tsx`.
-- [X] T002 Configure Tailwind CSS v4, shadcn/ui project metadata, Lucide React, Motion for React, and the shared class utility in `postcss.config.mjs`, `components.json`, `src/lib/utils.ts`, and `package.json`.
+- [X] T002 Configure Tailwind CSS v4, shadcn/ui project metadata, Lucide React, and the shared class utility in `postcss.config.mjs`, `components.json`, `src/lib/utils.ts`, and `package.json`; add a motion dependency only when an implemented interaction requires one.
 - [X] T003 Configure ESLint, Prettier, and the `lint`, `format:check`, `typecheck`, `dev`, `build`, and `start` scripts in `eslint.config.mjs`, `.prettierrc.json`, `.prettierignore`, and `package.json`.
 - [X] T004 Configure Vitest and React Testing Library with a DOM test environment and test setup in `vitest.config.ts`, `tests/setup.ts`, and `package.json`.
 - [X] T005 Configure Playwright, browser setup, and the `test:e2e` script in `playwright.config.ts` and `package.json`.
@@ -141,14 +141,14 @@ description: "Dependency-ordered implementation tasks for Portfolio Foundation"
 
 ### Tests for User Story 4
 
-- [X] T030 [US4] Write and run reduced-motion assertions for the mobile-panel interaction in `tests/components/mobile-navigation-motion.test.tsx`.
+- [X] T030 [US4] Write and run reduced-motion assertions for the mobile-panel interaction in `tests/e2e/accessibility.spec.ts`.
 
 ### Implementation for User Story 4
 
-- [X] T031 [US4] Add purposeful Motion for React panel open/close transitions and configure the user reduced-motion preference in `src/components/layout/mobile-navigation.tsx` and `src/app/layout.tsx`.
+- [X] T031 [US4] Add a purposeful CSS panel open/close transition and configure reduced-motion behavior in `src/app/globals.css` and `src/components/layout/responsive-mobile-navigation.tsx`.
 - [X] T032 [US4] Align hover, focus, active, expanded, and motion-disabled feedback across buttons and navigation in `src/app/globals.css` and `src/components/ui/button.tsx`.
 
-**Verification**: Motion tests pass; disabling/reducing motion preserves all controls and state cues; animation is limited to communicating interaction state.
+**Verification**: Reduced-motion Playwright coverage passes; disabling/reducing motion preserves all controls and navigation; animation is limited to communicating the dialog opening state.
 
 **Checkpoint**: User Story 4 is complete without adding decorative motion that delays or obscures content.
 
