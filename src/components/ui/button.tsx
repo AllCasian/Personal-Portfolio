@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes } from 'react'
 import { cn } from '@/lib/utils'
 
@@ -17,6 +16,10 @@ export function Button({ className, variant = 'primary', ...props }: ButtonProps
 }
 
 export function ButtonLink({ className, variant = 'primary', ...props }: ButtonLinkProps) {
-  const { href, ...anchorProps } = props
-  return <Link className={cn('button', styles[variant], className)} href={href} {...anchorProps} />
+  const { children, ...linkProps } = props
+  return (
+    <a className={cn('button', styles[variant], className)} {...linkProps}>
+      {children}
+    </a>
+  )
 }

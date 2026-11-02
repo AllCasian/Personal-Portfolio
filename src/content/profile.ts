@@ -1,9 +1,21 @@
 import type { ProfileContent } from './types'
 
-// Replace these clearly marked values with verified profile information before launch.
-export const profile = {
-  displayName: 'Your Name',
-  roleFocus: 'Software Engineer',
-  introduction: 'Add a concise, verified introduction about your professional focus here.',
-  primaryAction: { label: 'Explore portfolio', href: '#portfolio' },
-} as const satisfies ProfileContent
+// Profile details were provided and confirmed by the portfolio owner.
+export const profile: ProfileContent = {
+  displayName: 'Casian Criste',
+  roleFocus: 'Junior Data Engineer',
+  introduction:
+    "I'm a Computer Engineering graduate with interests in software engineering, full-stack development, and data engineering.",
+  aboutSummary: {
+    education: 'I graduated in Computer Engineering from the Technical University of Cluj-Napoca.',
+    experience: 'I currently work as a Junior Data Engineer at Endava.',
+    interests:
+      'My interests include software engineering, full-stack development, and data engineering.',
+    competencies:
+      'My technical background includes React, TypeScript, Java, Spring Boot, Python, SQL, and data engineering.',
+    approach:
+      "I'm interested in solving practical problems, writing maintainable code, and continually developing my technical skills.",
+    direction:
+      'I aim to grow as a software engineer while building on my data engineering experience.',
+  },
+}

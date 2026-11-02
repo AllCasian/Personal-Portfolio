@@ -80,6 +80,29 @@ for (const width of [320, 375, 768, 1024, 1440, 1920]) {
         .evaluate((el) => el.getBoundingClientRect().top)
       expect(intro).toBeLessThan(portrait)
     }
+
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
+    await expect(page.getByRole('region', { name: 'About' })).toBeVisible()
+    await expect(page.getByRole('link', { name: 'View Projects' })).toBeVisible()
+    await expect(page.getByRole('link', { name: 'Contact Me' })).toBeVisible()
+    const heroGeometry = await page.evaluate(() => {
+      const hero = document.querySelector('#home')!.getBoundingClientRect()
+      const about = document.querySelector('#about')!.getBoundingClientRect()
+      const h1 = document.querySelector('h1')!.getBoundingClientRect()
+      const actions = document.querySelector('.hero-action-group')!.getBoundingClientRect()
+      const portrait = document.querySelector('.portrait-frame')!.getBoundingClientRect()
+      return {
+        heroRight: hero.right,
+        aboutRight: about.right,
+        headingRight: h1.right,
+        actionsBottom: actions.bottom,
+        portraitTop: portrait.top,
+      }
+    })
+    expect(heroGeometry.heroRight).toBeLessThanOrEqual(width)
+    expect(heroGeometry.aboutRight).toBeLessThanOrEqual(width)
+    expect(heroGeometry.headingRight).toBeLessThanOrEqual(width)
+    if (width < 768) expect(heroGeometry.actionsBottom).toBeLessThan(heroGeometry.portraitTop)
   })
 }
 

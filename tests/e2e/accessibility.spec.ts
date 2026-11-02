@@ -9,6 +9,15 @@ test('landing page has no automated accessibility violations', async ({ page }) 
   expect(results.violations).toEqual([])
 })
 
+test('composed Hero and About page has no axe violations', async ({ page }) => {
+  await page.goto('/')
+  const results = await new AxeBuilder({ page })
+    .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
+    .analyze()
+  expect(results.violations).toEqual([])
+  await expect(page.getByRole('heading', { level: 1 })).toHaveCount(1)
+})
+
 test('open mobile navigation has no automated accessibility violations', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 })
   await page.goto('/')
@@ -19,6 +28,18 @@ test('open mobile navigation has no automated accessibility violations', async (
   expect(results.violations).toEqual([])
 })
 
+test('Escape closes mobile navigation and restores focus to its trigger', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 })
+  await page.goto('/')
+  const trigger = page.getByRole('button', { name: 'Open menu' })
+  await trigger.click()
+  await expect(page.getByRole('dialog', { name: 'Primary navigation' })).toBeVisible()
+  await page.keyboard.press('Escape')
+  await expect(page.getByRole('dialog')).toHaveCount(0)
+  await expect(trigger).toHaveAttribute('aria-expanded', 'false')
+  await expect(trigger).toBeFocused()
+})
+
 test('reduced motion preserves mobile navigation operation', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.setViewportSize({ width: 375, height: 812 })
@@ -26,8 +47,23 @@ test('reduced motion preserves mobile navigation operation', async ({ page }) =>
   await page.getByRole('button', { name: 'Open menu' }).click()
   const dialog = page.getByRole('dialog', { name: 'Primary navigation' })
   await expect(dialog).toBeVisible()
-  expect(await dialog.evaluate((element) => getComputedStyle(element).transform)).toBe('none')
+  const animationDuration = await dialog.locator('.mobile-panel').evaluate((element) => {
+    const duration = getComputedStyle(element).animationDuration
+    return duration.endsWith('ms')
+      ? Number.parseFloat(duration)
+      : Number.parseFloat(duration) * 1000
+  })
+  expect(animationDuration).toBeLessThanOrEqual(0.01)
   await dialog.getByRole('link', { name: 'About' }).click()
   await expect(page).toHaveURL(/#about$/)
   await expect(page.getByRole('heading', { level: 2, name: 'About' })).toBeFocused()
+})
+
+test('reduced motion leaves Hero and About content and actions available', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('/')
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
+  await expect(page.getByRole('region', { name: 'About' })).toBeVisible()
+  await expect(page.getByRole('link', { name: 'View Projects' })).toBeVisible()
+  await expect(page.getByRole('link', { name: 'Contact Me' })).toBeVisible()
 })

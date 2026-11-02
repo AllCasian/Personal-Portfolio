@@ -3,7 +3,11 @@ import { existsSync } from 'node:fs'
 import { once } from 'node:events'
 import { resolve } from 'node:path'
 
-const baseUrl = 'http://127.0.0.1:3000'
+const configuredBaseUrl = process.env.PLAYWRIGHT_BASE_URL ?? 'http://127.0.0.1:3000'
+const baseUrl = new URL(configuredBaseUrl).origin
+const serverUrl = new URL(baseUrl)
+const hostname = serverUrl.hostname
+const port = serverUrl.port || '80'
 const buildId = resolve('.next/BUILD_ID')
 let server
 let runner
@@ -47,7 +51,7 @@ async function main() {
 
     server = spawn(
       process.execPath,
-      ['node_modules/next/dist/bin/next', 'start', '--hostname', '127.0.0.1'],
+      ['node_modules/next/dist/bin/next', 'start', '--hostname', hostname, '--port', port],
       { stdio: 'inherit' },
     )
     server.once('error', (error) => console.error('Could not start Next.js:', error))

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import localFont from 'next/font/local'
+import { NavigationEnhancement } from '@/components/layout/navigation-enhancement'
 import './globals.css'
 
 const inter = localFont({
@@ -10,15 +11,18 @@ const inter = localFont({
 })
 
 export const metadata: Metadata = {
-  title: 'Your Name — Software Engineer',
+  title: 'Software Engineering Portfolio',
   description:
-    'A personal software engineering portfolio. Replace this description with a verified introduction.',
+    'A personal portfolio showcasing software engineering work and professional interests.',
 }
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={inter.variable}>
-      <body>{children}</body>
+      <body>
+        {children}
+        <NavigationEnhancement />
+      </body>
     </html>
   )
 }

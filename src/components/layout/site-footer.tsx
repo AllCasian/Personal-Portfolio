@@ -1,11 +1,9 @@
-import Link from 'next/link'
-
 export function SiteFooter() {
   return (
     <footer className="site-footer content-width">
-      <Link href="#home" className="footer-brand">
-        YN<span> · Software Engineer</span>
-      </Link>
+      <a href="#home" className="footer-brand" aria-label="Portfolio home">
+        Portfolio<span> · Software engineering</span>
+      </a>
       <p>
         Personal portfolio foundation <span>© {new Date().getFullYear()}</span>
       </p>

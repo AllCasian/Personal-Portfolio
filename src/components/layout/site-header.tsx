@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import { ArrowUpRight } from 'lucide-react'
 import { PrimaryLinks } from './primary-links'
 import { ResponsiveMobileNavigation } from './responsive-mobile-navigation'
@@ -6,10 +5,10 @@ import { ResponsiveMobileNavigation } from './responsive-mobile-navigation'
 export function SiteHeader() {
   return (
     <header className="site-header content-width">
-      <Link href="#home" className="wordmark" aria-label="Your Name, home">
-        <span>YN</span>
+      <a href="#home" className="wordmark" aria-label="Portfolio home">
+        <span aria-hidden="true">P</span>
         <i aria-hidden="true" />
-      </Link>
+      </a>
       <nav className="desktop-nav" aria-label="Primary">
         <PrimaryLinks />
       </nav>

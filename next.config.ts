@@ -2,6 +2,10 @@ import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  experimental: {
+    inlineCss: true,
+  },
+  allowedDevOrigins: ["192.168.1.148"],
 }
 
 export default nextConfig
