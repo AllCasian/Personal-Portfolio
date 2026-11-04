@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
   experimental: {
     inlineCss: true,
   },
-  allowedDevOrigins: ["192.168.1.148"],
+  allowedDevOrigins: ['192.168.1.148'],
 }
 
 export default nextConfig

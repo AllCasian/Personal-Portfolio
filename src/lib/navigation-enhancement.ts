@@ -12,13 +12,22 @@ export function initializeNavigation(documentRoot: Document = document): () => v
 
   const dialog = dialogElement
   const trigger = triggerElement
+  const navigationContext = documentRoot.querySelector<HTMLElement>('[data-navigation-context]')
+    ?.dataset.navigationContext
 
   function syncCurrentDestination() {
     const hash = browserWindow.location.hash.slice(1)
-    const current = sectionIds.has(hash) ? hash : 'home'
+    const current =
+      navigationContext === 'project'
+        ? 'portfolio'
+        : navigationContext === 'none'
+          ? undefined
+          : sectionIds.has(hash)
+            ? hash
+            : 'home'
 
     documentRoot.querySelectorAll('[data-section-link]').forEach((link) => {
-      const active = link.getAttribute('data-section-link') === current
+      const active = current !== undefined && link.getAttribute('data-section-link') === current
       link.classList.toggle('is-active', active)
 
       if (active) {

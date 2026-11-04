@@ -74,10 +74,10 @@ for (const width of [320, 375, 768, 1024, 1440, 1920]) {
     if (width < 768) {
       const intro = await page
         .getByRole('heading', { level: 1 })
-        .evaluate((el) => el.getBoundingClientRect().top)
+        .evaluate((el) => el.getBoundingClientRect().top + window.scrollY)
       const portrait = await page
         .locator('.portrait-frame')
-        .evaluate((el) => el.getBoundingClientRect().top)
+        .evaluate((el) => el.getBoundingClientRect().top + window.scrollY)
       expect(intro).toBeLessThan(portrait)
     }
 

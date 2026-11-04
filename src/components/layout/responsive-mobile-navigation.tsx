@@ -1,8 +1,11 @@
 import { ArrowUpRight, Menu, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { PrimaryLinks } from './primary-links'
+import type { NavigationContext } from '@/content/navigation'
 
-export function ResponsiveMobileNavigation() {
+export function ResponsiveMobileNavigation({ context = 'home' }: { context?: NavigationContext }) {
+  const prefix = context === 'home' ? '' : '/'
+
   return (
     <>
       <Button
@@ -38,15 +41,15 @@ export function ResponsiveMobileNavigation() {
             </form>
           </div>
           <nav aria-label="Primary" className="mobile-links">
-            <PrimaryLinks />
+            <PrimaryLinks context={context} />
           </nav>
-          <a href="#contact" className="panel-note" data-menu-destination="contact">
+          <a href={`${prefix}#contact`} className="panel-note" data-menu-destination="contact">
             Start a conversation <ArrowUpRight aria-hidden="true" size={18} />
           </a>
         </div>
       </dialog>
       <nav className="no-js-mobile-links" aria-label="Primary">
-        <PrimaryLinks />
+        <PrimaryLinks context={context} />
       </nav>
     </>
   )
