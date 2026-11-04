@@ -67,3 +67,58 @@ test('reduced motion leaves Hero and About content and actions available', async
   await expect(page.getByRole('link', { name: 'View Projects' })).toBeVisible()
   await expect(page.getByRole('link', { name: 'Contact Me' })).toBeVisible()
 })
+
+test('project collection has no configured WCAG 2.2 AA Axe violations', async ({ page }) => {
+  await page.goto('/#portfolio')
+  const results = await new AxeBuilder({ page })
+    .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
+    .analyze()
+  expect(results.violations).toEqual([])
+})
+
+test('project detail and project not-found pages have no configured Axe violations', async ({
+  page,
+}) => {
+  const tags = ['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa']
+  await page.goto('/projects/drivewise')
+  const detailResults = await new AxeBuilder({ page }).withTags(tags).analyze()
+  expect(detailResults.violations).toEqual([])
+
+  await page.goto('/projects/not-a-project')
+  const notFoundResults = await new AxeBuilder({ page }).withTags(tags).analyze()
+  expect(notFoundResults.violations).toEqual([])
+})
+
+test('project cards and detail actions are keyboard reachable with visible focus', async ({
+  page,
+}) => {
+  await page.goto('/#portfolio')
+  await page.keyboard.press('Tab')
+  const focused = page.locator(':focus')
+  await expect(focused).toBeVisible()
+  const outline = await focused.evaluate((element) => getComputedStyle(element).outlineStyle)
+  expect(outline).not.toBe('none')
+
+  await page.getByRole('link', { name: 'View details for Drivewise' }).focus()
+  await page.keyboard.press('Enter')
+  await expect(page).toHaveURL(/\/projects\/drivewise$/)
+  await expect(page.getByRole('heading', { level: 1, name: 'Drivewise' })).toBeVisible()
+  await page.getByRole('link', { name: 'Back to Projects' }).focus()
+  await page.keyboard.press('Enter')
+  await expect(page).toHaveURL(/\/#portfolio$/)
+})
+
+test('project content and actions remain available under reduced motion', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('/#portfolio')
+  await expect(page.getByRole('heading', { level: 2, name: 'Portfolio' })).toBeVisible()
+  await expect(page.getByRole('link', { name: 'View details for AI Recipe' })).toBeVisible()
+  const duration = await page
+    .locator('.project-card')
+    .first()
+    .evaluate((element) => {
+      const value = getComputedStyle(element).transitionDuration.split(',')[0]
+      return value.endsWith('ms') ? Number.parseFloat(value) : Number.parseFloat(value) * 1000
+    })
+  expect(duration).toBeLessThanOrEqual(0.01)
+})

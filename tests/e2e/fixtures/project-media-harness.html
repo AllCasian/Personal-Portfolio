@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Private project media test fixture</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 1rem;
+        font: 16px/1.5 sans-serif;
+      }
+
+      #fixture-root {
+        width: min(100%, 640px);
+      }
+
+      .project-detail-content,
+      .project-detail-copy,
+      .project-media-list {
+        min-width: 0;
+      }
+
+      .project-media-frame {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+        background: #151d32;
+      }
+
+      .project-media-frame img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="fixture-root"></div>
+    <script type="module" src="/tests/e2e/fixtures/project-media-harness.tsx"></script>
+  </body>
+</html>

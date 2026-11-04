@@ -4,6 +4,7 @@ import { SkipLink } from '@/components/layout/skip-link'
 import { HeroSection } from '@/components/sections/hero-section'
 import { AboutSection } from '@/components/sections/about-section'
 import { SectionPlaceholder } from '@/components/sections/section-placeholder'
+import { ProjectsSection } from '@/components/sections/projects-section'
 import { sections } from '@/content/sections'
 
 export default function HomePage() {
@@ -17,9 +18,13 @@ export default function HomePage() {
         <div className="section-stack">
           {sections
             .filter((section) => section.state === 'placeholder')
-            .map((section) => (
-              <SectionPlaceholder key={section.id} section={section} />
-            ))}
+            .map((section) =>
+              section.id === 'portfolio' ? (
+                <ProjectsSection key={section.id} />
+              ) : (
+                <SectionPlaceholder key={section.id} section={section} />
+              ),
+            )}
         </div>
       </main>
       <SiteFooter />
