@@ -140,5 +140,18 @@ test('primary navigation links remain available without JavaScript on project ro
   await expect(navigation.getByRole('link', { name: 'Home' })).toHaveAttribute('href', '/#home')
   await navigation.getByRole('link', { name: 'About' }).click()
   await expect(page).toHaveURL(/\/#about$/)
+  for (const destination of ['experience', 'education', 'skills']) {
+    await page.goto('/projects/drivewise')
+    const projectNav = page.locator('nav[aria-label="Primary"]:visible').first()
+    const link = projectNav.getByRole('link', { name: new RegExp(`^${destination}$`, 'i') })
+    await expect(link).toHaveAttribute('href', `/#${destination}`)
+    await expect(projectNav.locator('[aria-current="location"]')).toHaveAttribute(
+      'data-section-link',
+      'portfolio',
+    )
+    await link.click()
+    await expect(page).toHaveURL(new RegExp(`#${destination}$`))
+    await expect(page.locator(`#${destination}`)).toBeVisible()
+  }
   await context.close()
 })

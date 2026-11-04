@@ -7,6 +7,9 @@ test('landing page has no automated accessibility violations', async ({ page }) 
     .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
     .analyze()
   expect(results.violations).toEqual([])
+  await expect(page.getByRole('region', { name: 'Experience' })).toBeVisible()
+  await expect(page.getByRole('region', { name: 'Education' })).toBeVisible()
+  await expect(page.getByRole('region', { name: 'Skills' })).toBeVisible()
 })
 
 test('composed Hero and About page has no axe violations', async ({ page }) => {

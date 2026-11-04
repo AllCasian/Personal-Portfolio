@@ -7,7 +7,15 @@ describe('progressive navigation state', () => {
       <header data-navigation-context="project"></header>
       <button id="mobile-navigation-trigger" aria-expanded="false"></button>
       <dialog id="mobile-navigation-dialog"><button data-menu-close></button></dialog>
-      <nav aria-label="Primary">${['home', 'about', 'portfolio', 'contact']
+      <nav aria-label="Primary">${[
+        'home',
+        'about',
+        'portfolio',
+        'experience',
+        'education',
+        'skills',
+        'contact',
+      ]
         .map((id) => `<a href="/#${id}" data-section-link="${id}">${id}</a>`)
         .join('')}</nav>
     `
@@ -30,7 +38,15 @@ describe('progressive navigation state', () => {
     document.body.innerHTML = `
       <button id="mobile-navigation-trigger" aria-expanded="false"></button>
       <dialog id="mobile-navigation-dialog"><button data-menu-close></button></dialog>
-      <nav aria-label="Primary">${['home', 'about', 'portfolio', 'contact']
+      <nav aria-label="Primary">${[
+        'home',
+        'about',
+        'portfolio',
+        'experience',
+        'education',
+        'skills',
+        'contact',
+      ]
         .map((id) => `<a href="#${id}" data-section-link="${id}">${id}</a>`)
         .join('')}</nav>
       <nav aria-label="Primary">${['home', 'about', 'portfolio', 'contact']
@@ -55,5 +71,50 @@ describe('progressive navigation state', () => {
     }
 
     cleanup()
+  })
+
+  it('supports all seven direct hashes while leaving passive scrolling out of state updates', () => {
+    document.documentElement.className = ''
+    document.body.innerHTML = `
+      <button id="mobile-navigation-trigger" aria-expanded="false"></button>
+      <dialog id="mobile-navigation-dialog"><button data-menu-close></button></dialog>
+      <nav aria-label="Primary">${[
+        'home',
+        'about',
+        'portfolio',
+        'experience',
+        'education',
+        'skills',
+        'contact',
+      ]
+        .map((id) => `<a href="#${id}" data-section-link="${id}">${id}</a>`)
+        .join('')}</nav>
+    `
+
+    for (const destination of [
+      'home',
+      'about',
+      'portfolio',
+      'experience',
+      'education',
+      'skills',
+      'contact',
+    ]) {
+      window.history.replaceState(null, '', `/#${destination}`)
+      const cleanup = initializeNavigation()
+      const navigation = document.querySelector('nav[aria-label="Primary"]')
+      expect(navigation?.querySelectorAll('[aria-current="location"]')).toHaveLength(1)
+      expect(navigation?.querySelector('[aria-current="location"]')).toHaveAttribute(
+        'data-section-link',
+        destination,
+      )
+      window.dispatchEvent(new Event('scroll'))
+      expect(navigation?.querySelector('[aria-current="location"]')).toHaveAttribute(
+        'data-section-link',
+        destination,
+      )
+      cleanup()
+    }
+    window.history.replaceState(null, '', '/')
   })
 })
