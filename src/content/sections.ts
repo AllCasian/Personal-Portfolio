@@ -6,9 +6,12 @@ export const sections = [
   {
     id: 'portfolio',
     title: 'Portfolio',
-    state: 'placeholder',
+    state: 'content',
     description: 'Selected work will be added here.',
   },
+  { id: 'experience', title: 'Experience', state: 'content' },
+  { id: 'education', title: 'Education', state: 'content' },
+  { id: 'skills', title: 'Skills', state: 'content' },
   {
     id: 'contact',
     title: 'Contact',

@@ -6,8 +6,14 @@ import { AboutSection } from '@/components/sections/about-section'
 import { SectionPlaceholder } from '@/components/sections/section-placeholder'
 import { ProjectsSection } from '@/components/sections/projects-section'
 import { sections } from '@/content/sections'
+import { ExperienceSection } from '@/components/sections/experience-section'
+import { EducationSection } from '@/components/sections/education-section'
+import { SkillsSection } from '@/components/sections/skills-section'
+import { getPublishedProfessionalContent } from '@/lib/professional-content'
 
 export default function HomePage() {
+  const professionalContent = getPublishedProfessionalContent()
+
   return (
     <>
       <SkipLink />
@@ -17,10 +23,20 @@ export default function HomePage() {
         <AboutSection />
         <div className="section-stack">
           {sections
-            .filter((section) => section.state === 'placeholder')
+            .filter((section) => !['home', 'about'].includes(section.id))
             .map((section) =>
               section.id === 'portfolio' ? (
                 <ProjectsSection key={section.id} />
+              ) : section.id === 'experience' ? (
+                <ExperienceSection entries={professionalContent.experience} key={section.id} />
+              ) : section.id === 'education' ? (
+                <EducationSection
+                  certifications={professionalContent.certifications}
+                  entries={professionalContent.education}
+                  key={section.id}
+                />
+              ) : section.id === 'skills' ? (
+                <SkillsSection categories={professionalContent.skillCategories} key={section.id} />
               ) : (
                 <SectionPlaceholder key={section.id} section={section} />
               ),

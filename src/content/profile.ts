@@ -8,7 +8,8 @@ export const profile: ProfileContent = {
     "I'm a Computer Engineering graduate with interests in software engineering, full-stack development, and data engineering.",
   aboutSummary: {
     education: 'I graduated in Computer Engineering from the Technical University of Cluj-Napoca.',
-    experience: 'I currently work as a Junior Data Engineer at Endava.',
+    experience:
+      'I worked as a Junior Data Engineer in the Dava.X Trainee Program at Endava from June to October 2026.',
     interests:
       'My interests include software engineering, full-stack development, and data engineering.',
     competencies:

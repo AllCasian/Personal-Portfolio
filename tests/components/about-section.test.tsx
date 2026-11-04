@@ -20,7 +20,11 @@ describe('AboutSection', () => {
         'I graduated in Computer Engineering from the Technical University of Cluj-Napoca.',
       ),
     ).toBeVisible()
-    expect(screen.getByText('I currently work as a Junior Data Engineer at Endava.')).toBeVisible()
+    expect(
+      screen.getByText(
+        'I worked as a Junior Data Engineer in the Dava.X Trainee Program at Endava from June to October 2026.',
+      ),
+    ).toBeVisible()
     expect(
       screen.getByText(
         'My interests include software engineering, full-stack development, and data engineering.',

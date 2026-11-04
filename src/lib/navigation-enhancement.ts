@@ -1,4 +1,12 @@
-const sectionIds = new Set(['home', 'about', 'portfolio', 'contact'])
+const sectionIds = new Set([
+  'home',
+  'about',
+  'portfolio',
+  'experience',
+  'education',
+  'skills',
+  'contact',
+])
 
 export function initializeNavigation(documentRoot: Document = document): () => void {
   const view = documentRoot.defaultView

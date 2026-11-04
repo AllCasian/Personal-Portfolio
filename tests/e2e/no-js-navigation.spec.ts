@@ -18,8 +18,14 @@ test('primary destinations remain visible and usable without JavaScript', async 
   await page.goto('/')
   const nav = page.getByRole('navigation', { name: 'Primary' })
   await expect(nav.getByRole('link', { name: 'Home' })).toBeVisible()
+  await expect(nav).toHaveCSS('position', 'fixed')
   await nav.getByRole('link', { name: 'About' }).click()
   await expect(page).toHaveURL(/#about$/)
   await expect(page.getByRole('heading', { level: 2, name: 'About' })).toBeVisible()
+  for (const destination of ['experience', 'education', 'skills']) {
+    await nav.getByRole('link', { name: new RegExp(`^${destination}$`, 'i') }).click()
+    await expect(page).toHaveURL(new RegExp(`#${destination}$`))
+    await expect(page.locator(`#${destination}`)).toBeVisible()
+  }
   await context.close()
 })
