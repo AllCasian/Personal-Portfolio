@@ -17,7 +17,7 @@ export function AboutSection() {
       <SectionHeading eyebrow="Background & approach" id="about-title">
         About
       </SectionHeading>
-      <div className="about-topics">
+      <div className="about-topics" data-motion-reveal>
         {Object.entries(topicLabels).map(([key, label]) => (
           <Card className="about-topic" key={key}>
             <h3>{label}</h3>

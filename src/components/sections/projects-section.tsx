@@ -12,7 +12,7 @@ export function ProjectsSection() {
       id="portfolio"
       aria-labelledby="portfolio-title"
     >
-      <SectionHeading eyebrow="Selected projects" id="portfolio-title">
+      <SectionHeading eyebrow="Selected projects" id="portfolio-title" motionReveal>
         Portfolio
       </SectionHeading>
       <div className="project-groups">

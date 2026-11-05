@@ -29,7 +29,7 @@ export function EducationSection({
           ))}
         </div>
         {certifications.length > 0 ? (
-          <div className="certifications">
+          <div className="certifications" data-motion-reveal>
             <h3>Certifications</h3>
             <ul className="certification-list">
               {certifications.map((certification) => (

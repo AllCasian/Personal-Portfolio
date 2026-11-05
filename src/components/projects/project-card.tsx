@@ -11,7 +11,7 @@ export function ProjectCard({
   categoryLabel: string
 }) {
   return (
-    <Card className="project-card">
+    <Card className="project-card" data-motion-reveal>
       <ProjectMedia media={project.media} />
       <div className="project-card-body">
         <p className="project-category">{categoryLabel}</p>

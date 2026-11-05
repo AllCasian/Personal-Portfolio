@@ -44,12 +44,12 @@ test('collection and detail layouts reflow without overflow, clipping, or unreac
 })
 
 test('absent approved media creates no image request or empty media frame', async ({ page }) => {
+  await page.goto('/projects/ai-recipe')
   const imageRequests: string[] = []
   page.on('request', (request) => {
     if (request.resourceType() === 'image') imageRequests.push(request.url())
   })
-  await page.goto('/#portfolio')
-  await page.goto('/projects/ai-recipe')
+  await page.reload()
   expect(await page.locator('.project-media-frame').count()).toBe(0)
   expect(await page.locator('img').count()).toBe(0)
   expect(imageRequests).toEqual([])

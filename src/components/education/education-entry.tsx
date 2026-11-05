@@ -14,7 +14,7 @@ export function EducationEntry({ entry }: { entry: PublishedEducation }) {
       : undefined
 
   return (
-    <Card className="education-entry">
+    <Card className="education-entry" data-motion-reveal>
       <h3>{entry.institution}</h3>
       {entry.qualification ? (
         <p className="education-qualification">{entry.qualification}</p>
