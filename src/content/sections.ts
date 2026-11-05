@@ -12,10 +12,5 @@ export const sections = [
   { id: 'experience', title: 'Experience', state: 'content' },
   { id: 'education', title: 'Education', state: 'content' },
   { id: 'skills', title: 'Skills', state: 'content' },
-  {
-    id: 'contact',
-    title: 'Contact',
-    state: 'placeholder',
-    description: 'Contact details will be added here.',
-  },
+  { id: 'contact', title: 'Contact', state: 'content' },
 ] as const satisfies readonly PortfolioSection[]

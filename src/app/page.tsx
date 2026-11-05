@@ -9,10 +9,13 @@ import { sections } from '@/content/sections'
 import { ExperienceSection } from '@/components/sections/experience-section'
 import { EducationSection } from '@/components/sections/education-section'
 import { SkillsSection } from '@/components/sections/skills-section'
+import { ContactSection } from '@/components/sections/contact-section'
 import { getPublishedProfessionalContent } from '@/lib/professional-content'
+import { getPublishedContactProfile } from '@/lib/contact-content'
 
 export default function HomePage() {
   const professionalContent = getPublishedProfessionalContent()
+  const contactProfile = getPublishedContactProfile()
 
   return (
     <>
@@ -37,13 +40,15 @@ export default function HomePage() {
                 />
               ) : section.id === 'skills' ? (
                 <SkillsSection categories={professionalContent.skillCategories} key={section.id} />
+              ) : section.id === 'contact' ? (
+                <ContactSection profile={contactProfile} key={section.id} />
               ) : (
                 <SectionPlaceholder key={section.id} section={section} />
               ),
             )}
         </div>
       </main>
-      <SiteFooter />
+      <SiteFooter ownerName={contactProfile.ownerName} />
     </>
   )
 }
