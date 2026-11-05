@@ -2,8 +2,11 @@ import { SiteFooter } from '@/components/layout/site-footer'
 import { SiteHeader } from '@/components/layout/site-header'
 import { SkipLink } from '@/components/layout/skip-link'
 import { ProjectNavigation } from '@/components/projects/project-navigation'
+import { getPublishedContactProfile } from '@/lib/contact-content'
 
 export default function ProjectNotFound() {
+  const contactProfile = getPublishedContactProfile()
+
   return (
     <>
       <SkipLink />
@@ -14,7 +17,7 @@ export default function ProjectNotFound() {
         <p>The requested project is unavailable.</p>
         <ProjectNavigation />
       </main>
-      <SiteFooter context="none" />
+      <SiteFooter context="none" ownerName={contactProfile.ownerName} />
     </>
   )
 }

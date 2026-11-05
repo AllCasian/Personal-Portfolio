@@ -6,6 +6,7 @@ import { SkipLink } from '@/components/layout/skip-link'
 import { ProjectDetailLayout } from '@/components/projects/project-detail-layout'
 import { getPublishedProject, getPublishedProjectParams } from '@/lib/projects'
 import { createProjectMetadata } from '@/lib/project-metadata'
+import { getPublishedContactProfile } from '@/lib/contact-content'
 
 export const dynamicParams = true
 
@@ -24,6 +25,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   const { slug } = await params
   const project = getPublishedProject(slug)
   if (!project) notFound()
+  const contactProfile = getPublishedContactProfile()
 
   return (
     <>
@@ -32,7 +34,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
       <main id="main-content">
         <ProjectDetailLayout project={project} />
       </main>
-      <SiteFooter context="project" />
+      <SiteFooter context="project" ownerName={contactProfile.ownerName} />
     </>
   )
 }

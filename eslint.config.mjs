@@ -29,6 +29,7 @@ export default defineConfig([
   },
   globalIgnores([
     '.next/**',
+    'tests/e2e/fixtures/contact-publication-next/.next/**',
     'out/**',
     'build/**',
     'next-env.d.ts',

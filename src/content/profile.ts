@@ -4,6 +4,10 @@ import type { ProfileContent } from './types'
 export const profile: ProfileContent = {
   displayName: 'Casian Criste',
   roleFocus: 'Junior Data Engineer',
+  portrait: {
+    src: '/images/me1-2.jpg',
+    alt: 'Casian Criste',
+  },
   introduction:
     "I'm a Computer Engineering graduate with interests in software engineering, full-stack development, and data engineering.",
   aboutSummary: {
