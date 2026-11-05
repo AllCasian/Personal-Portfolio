@@ -5,7 +5,7 @@ import { PortraitFallback } from '@/components/sections/portrait-fallback'
 
 export function HeroSection() {
   return (
-    <section className="hero content-width" id="home" aria-labelledby="hero-title">
+    <section className="hero content-width" id="home" aria-labelledby="hero-title" data-motion-hero>
       <div className="hero-copy">
         <p className="eyebrow">A personal software engineering portfolio</p>
         <h1 id="hero-title" tabIndex={-1}>

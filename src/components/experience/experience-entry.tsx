@@ -9,7 +9,7 @@ function formatMonthYear(date: MonthYear): string {
 
 export function ExperienceEntry({ entry }: { entry: PublishedExperience }) {
   return (
-    <Card className="professional-entry">
+    <Card className="professional-entry" data-motion-reveal>
       <div className="professional-entry-heading">
         <div>
           <h3>{entry.role}</h3>

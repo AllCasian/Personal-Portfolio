@@ -11,13 +11,13 @@ export function ContactSection({ profile }: { profile: PublicContactProfile }) {
       <SectionHeading id="contact-title" eyebrow="Get in touch">
         Contact
       </SectionHeading>
-      <p className="contact-introduction">
+      <p className="contact-introduction" data-motion-reveal>
         Have an opportunity, a project idea, or just want to connect? I&apos;d love to hear from
         you.
       </p>
 
       {profile.email ? (
-        <div className="contact-email-row">
+        <div className="contact-email-row" data-motion-reveal>
           <p className="contact-email" aria-label="Email address">
             {profile.email}
           </p>
@@ -29,7 +29,7 @@ export function ContactSection({ profile }: { profile: PublicContactProfile }) {
       ) : null}
 
       {profile.githubUrl || profile.linkedinUrl ? (
-        <nav className="contact-social-links" aria-label="Social profiles">
+        <nav className="contact-social-links" aria-label="Social profiles" data-motion-reveal>
           {profile.githubUrl ? (
             <a
               className="text-link"

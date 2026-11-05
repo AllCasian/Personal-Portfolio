@@ -73,10 +73,26 @@ test('reduced motion leaves Hero and About content and actions available', async
 
 test('project collection has no configured WCAG 2.2 AA Axe violations', async ({ page }) => {
   await page.goto('/#portfolio')
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight))
+  await expect(page.locator('[data-motion-reveal-state="pending"]')).toHaveCount(0)
   const results = await new AxeBuilder({ page })
     .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
     .analyze()
   expect(results.violations).toEqual([])
+})
+
+test('motion reveal and focused card states introduce no configured Axe violations', async ({
+  page,
+}) => {
+  await page.goto('/#portfolio')
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight))
+  await expect(page.locator('[data-motion-reveal-state="pending"]')).toHaveCount(0)
+  await page.getByRole('link', { name: 'View details for Drivewise' }).focus()
+  const results = await new AxeBuilder({ page })
+    .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
+    .analyze()
+  expect(results.violations).toEqual([])
+  await expect(page.locator(':focus')).toBeVisible()
 })
 
 test('project detail and project not-found pages have no configured Axe violations', async ({

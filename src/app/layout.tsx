@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import localFont from 'next/font/local'
 import { NavigationEnhancement } from '@/components/layout/navigation-enhancement'
+import { MotionRevealEnhancement } from '@/components/motion/motion-reveal-enhancement'
 import { siteMetadata } from '@/lib/site-metadata'
 import './globals.css'
 
@@ -19,6 +20,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body>
         {children}
         <NavigationEnhancement />
+        <MotionRevealEnhancement />
       </body>
     </html>
   )

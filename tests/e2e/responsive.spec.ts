@@ -106,6 +106,40 @@ for (const width of [320, 375, 768, 1024, 1440, 1920]) {
   })
 }
 
+test('motion targets and focus affordances stay within supported responsive widths', async ({
+  page,
+}) => {
+  for (const width of [320, 375, 768, 1024, 1440, 1920]) {
+    await page.setViewportSize({ width, height: 900 })
+    await page.goto('/#portfolio')
+    await expect(page.getByRole('link', { name: 'View details for Drivewise' })).toBeVisible()
+
+    const bounds = await page.locator('[data-motion-reveal]').evaluateAll((elements) =>
+      elements.map((element) => {
+        const rect = element.getBoundingClientRect()
+        return { left: rect.left, right: rect.right, width: rect.width }
+      }),
+    )
+    expect(bounds.length).toBeGreaterThan(0)
+    expect(
+      bounds.every(
+        ({ left, right, width: elementWidth }) =>
+          elementWidth >= 0 && left >= -1 && right <= width + 1,
+      ),
+    ).toBe(true)
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(
+      width,
+    )
+
+    const details = page.getByRole('link', { name: 'View details for Drivewise' })
+    await details.evaluate((link) =>
+      (link as HTMLElement).focus({ focusVisible: true } as FocusOptions),
+    )
+    await expect(details).toBeFocused()
+    await expect(details).toHaveCSS('outline-style', 'solid')
+  }
+})
+
 test('desktop active styling is distinct from hover and focus', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 })
   await page.goto('/#about')

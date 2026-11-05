@@ -13,7 +13,7 @@ describe('HeroSection', () => {
         "I'm a Computer Engineering graduate with interests in software engineering, full-stack development, and data engineering.",
       ),
     ).toBeVisible()
-    expect(screen.queryByRole('img')).not.toBeInTheDocument()
+    expect(screen.getByRole('img', { name: 'Casian Criste' })).toBeVisible()
     expect(screen.queryByText(/^Placeholder:/)).not.toBeInTheDocument()
   })
 

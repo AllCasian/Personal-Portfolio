@@ -23,7 +23,7 @@ export function ProjectCategoryGroup({
         </div>
         {'organization' in group ? <span>{group.organization}</span> : null}
       </div>
-      <div className="project-grid">
+      <div className="project-grid" data-motion-stagger>
         {projects.map((project) => (
           <ProjectCard categoryLabel={group.categoryLabel} key={project.id} project={project} />
         ))}

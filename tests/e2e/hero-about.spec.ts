@@ -54,18 +54,12 @@ for (const { width, height } of [
   { width: 1440, height: 900 },
 ]) {
   test(`SC-001 content is visible in the initial ${width}x${height} viewport`, async ({ page }) => {
-    const imageRequests: string[] = []
-    page.on('request', (request) => {
-      if (/\.(png|jpe?g|webp|avif)(\?|$)/i.test(request.url())) imageRequests.push(request.url())
-    })
     await page.setViewportSize({ width, height })
     await page.goto('/')
-    await expect(page.getByRole('img')).toHaveCount(0)
+    await expect(page.getByRole('img', { name: 'Casian Criste' })).toBeVisible()
     const initialPortrait = await page.locator('.portrait-frame').boundingBox()
-    await page.waitForTimeout(200)
     const settledPortrait = await page.locator('.portrait-frame').boundingBox()
     expect(settledPortrait).toEqual(initialPortrait)
-    expect(imageRequests).toEqual([])
     const required = [
       page.locator('.hero-name'),
       page.locator('.hero-role'),

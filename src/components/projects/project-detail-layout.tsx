@@ -24,7 +24,7 @@ export function ProjectDetailLayout({ project }: { project: PublishedProject }) 
 
   return (
     <article className="project-detail content-width">
-      <header className="project-detail-header">
+      <header className="project-detail-header" data-motion-reveal>
         <p className="project-category">{group?.categoryLabel ?? 'Project'}</p>
         <h1>{project.title}</h1>
         <p className="project-context">
