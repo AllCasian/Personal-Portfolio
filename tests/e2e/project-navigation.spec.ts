@@ -1,9 +1,20 @@
-import { expect, test, type Locator } from '@playwright/test'
+import { expect, test, type Locator, type Page } from '@playwright/test'
 
 async function expectCurrentDestination(navigation: Locator, destination: string) {
   const current = navigation.locator('[data-section-link][aria-current="location"]')
   await expect(current).toHaveCount(1)
   await expect(current).toHaveAttribute('data-section-link', destination)
+}
+
+async function scrollAndSettle(page: Page, y: number) {
+  await page.evaluate((target) => window.scrollTo({ top: target, behavior: 'instant' }), y)
+  await page.waitForFunction((target) => window.scrollY === target, y)
+  await page.evaluate(
+    () =>
+      new Promise<void>((resolve) =>
+        requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
+      ),
+  )
 }
 
 test('homepage hash navigation and browser history keep the current destination synchronized', async ({
@@ -24,6 +35,78 @@ test('homepage hash navigation and browser history keep the current destination 
   await page.goForward()
   await expect(page).toHaveURL(/#portfolio$/)
   await expectCurrentDestination(navigation, 'portfolio')
+})
+
+test('navbar visibility follows scroll direction without owning the active destination', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto('/')
+  const header = page.locator('.site-header')
+  const navigation = page.locator('.desktop-nav')
+  await expect(header).toHaveAttribute('data-nav-visibility', 'visible')
+  await expectCurrentDestination(navigation, 'home')
+
+  await scrollAndSettle(page, 64)
+  await expect(header).toHaveAttribute('data-nav-visibility', 'visible')
+  await scrollAndSettle(page, 71)
+  await expect(header).toHaveAttribute('data-nav-visibility', 'visible')
+  await scrollAndSettle(page, 76)
+  await expect(header).toHaveAttribute('data-nav-visibility', 'hidden')
+  await expectCurrentDestination(navigation, 'home')
+
+  await scrollAndSettle(page, 71)
+  await expect(header).toHaveAttribute('data-nav-visibility', 'hidden')
+  await scrollAndSettle(page, 64)
+  await expect(header).toHaveAttribute('data-nav-visibility', 'visible')
+  await expectCurrentDestination(navigation, 'home')
+
+  await scrollAndSettle(page, 16)
+  await expect(header).toHaveAttribute('data-nav-visibility', 'visible')
+})
+
+test('anchor and history navigation reveal the header and keep targets below it', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto('/')
+  await page.getByRole('link', { name: 'Contact Me' }).click()
+  await expect(page).toHaveURL(/#contact$/)
+  const header = page.locator('.site-header')
+  await expect(header).toHaveAttribute('data-nav-visibility', 'visible')
+  const contactHeading = page.getByRole('heading', { name: 'Contact', exact: true })
+  const headerBottom = await header.evaluate((element) => element.getBoundingClientRect().bottom)
+  const headingTop = await contactHeading.evaluate((element) => element.getBoundingClientRect().top)
+  expect(headingTop).toBeGreaterThanOrEqual(headerBottom)
+  await expectCurrentDestination(page.locator('.desktop-nav'), 'contact')
+
+  await page.goBack()
+  await expect(header).toHaveAttribute('data-nav-visibility', 'visible')
+  await page.goForward()
+  await expect(header).toHaveAttribute('data-nav-visibility', 'visible')
+  await expectCurrentDestination(page.locator('.desktop-nav'), 'contact')
+})
+
+test('reduced motion preserves navbar direction behavior without a sliding transition', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto('/')
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  const header = page.locator('.site-header')
+  const currentY = await page.evaluate(() => window.scrollY)
+  await scrollAndSettle(page, Math.max(120, currentY + 120))
+  await expect(header).toHaveAttribute('data-nav-visibility', 'hidden')
+  const transitionDuration = await header.evaluate((element) =>
+    Number.parseFloat(getComputedStyle(element).transitionDuration),
+  )
+  expect(transitionDuration).toBeLessThanOrEqual(0.00001)
+  await scrollAndSettle(page, 108)
+  await expect(header).toHaveAttribute('data-nav-visibility', 'visible')
+  await expect(page.locator('.desktop-nav [aria-current="location"]')).toHaveAttribute(
+    'data-section-link',
+    'home',
+  )
 })
 
 test('approved detail routes render Portfolio as sole current destination and restore homepage history', async ({

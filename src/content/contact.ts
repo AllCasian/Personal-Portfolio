@@ -16,5 +16,6 @@ export const contactRecord = {
     email: ownerConfirmed('cristecasian@gmail.com'),
     githubUrl: ownerConfirmed('https://github.com/AllCasian'),
     linkedinUrl: ownerConfirmed('https://www.linkedin.com/in/casian-criste-b65582263/'),
+    instagramUrl: ownerConfirmed('https://www.instagram.com/casiancriste'),
   },
 } as const satisfies ContactSourceRecord

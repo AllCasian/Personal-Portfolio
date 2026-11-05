@@ -12,6 +12,7 @@ describe('approved contact source', () => {
     expect(contactRecord.fields.linkedinUrl.value).toBe(
       'https://www.linkedin.com/in/casian-criste-b65582263/',
     )
+    expect(contactRecord.fields.instagramUrl.value).toBe('https://www.instagram.com/casiancriste')
 
     for (const field of Object.values(contactRecord.fields)) {
       expect(field.verification).toEqual({ status: 'verified', source: 'owner-confirmed' })
@@ -22,6 +23,7 @@ describe('approved contact source', () => {
       'email',
       'githubUrl',
       'linkedinUrl',
+      'instagramUrl',
     ])
   })
 
@@ -33,6 +35,7 @@ describe('approved contact source', () => {
       email: 'cristecasian@gmail.com',
       githubUrl: 'https://github.com/AllCasian',
       linkedinUrl: 'https://www.linkedin.com/in/casian-criste-b65582263/',
+      instagramUrl: 'https://www.instagram.com/casiancriste',
     })
     for (const destination of [profile.githubUrl, profile.linkedinUrl]) {
       expect(destination).toMatch(/^https:\/\//)
@@ -41,7 +44,6 @@ describe('approved contact source', () => {
     expect(profile).not.toHaveProperty('phone')
     expect(profile).not.toHaveProperty('address')
     expect(profile).not.toHaveProperty('twitterUrl')
-    expect(profile).not.toHaveProperty('instagramUrl')
     expect(profile).not.toHaveProperty('resumeUrl')
   })
 

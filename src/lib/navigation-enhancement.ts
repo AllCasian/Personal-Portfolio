@@ -20,8 +20,97 @@ export function initializeNavigation(documentRoot: Document = document): () => v
 
   const dialog = dialogElement
   const trigger = triggerElement
+  const header = documentRoot.querySelector<HTMLElement>('.site-header')
   const navigationContext = documentRoot.querySelector<HTMLElement>('[data-navigation-context]')
     ?.dataset.navigationContext
+  let previousScrollY = browserWindow.scrollY
+  let directionBaselineY = previousScrollY
+  let scrollDirection = 0
+  let pendingFrame: number | null = null
+  let initialAnchorPending = Boolean(browserWindow.location.hash)
+
+  function setHeaderVisibility(visible: boolean) {
+    if (!header) return
+    header.dataset.navVisibility = visible ? 'visible' : 'hidden'
+  }
+
+  function resetVisibilityBaseline() {
+    previousScrollY = browserWindow.scrollY
+    directionBaselineY = previousScrollY
+    scrollDirection = 0
+  }
+
+  function navigationIsLocked() {
+    return Boolean(
+      header?.contains(documentRoot.activeElement) ||
+      dialog.open ||
+      trigger.getAttribute('aria-expanded') === 'true',
+    )
+  }
+
+  function updateVisibilityFromScroll() {
+    pendingFrame = null
+    const currentScrollY = Math.max(0, browserWindow.scrollY)
+    const isShortPage = documentRoot.documentElement.scrollHeight <= browserWindow.innerHeight
+
+    if (currentScrollY <= 16 || isShortPage || navigationIsLocked()) {
+      setHeaderVisibility(true)
+      resetVisibilityBaseline()
+      return
+    }
+
+    if (initialAnchorPending) {
+      setHeaderVisibility(true)
+      resetVisibilityBaseline()
+      const target = documentRoot.getElementById(browserWindow.location.hash.slice(1))
+      const targetTop = target?.getBoundingClientRect().top
+      const headerBottom = header?.getBoundingClientRect().bottom ?? 0
+      if (
+        targetTop !== undefined &&
+        currentScrollY > 16 &&
+        targetTop >= headerBottom &&
+        targetTop <= browserWindow.innerHeight
+      ) {
+        initialAnchorPending = false
+      }
+      return
+    }
+
+    const movement = currentScrollY - previousScrollY
+    if (movement === 0) return
+
+    const nextDirection = Math.sign(movement)
+    if (nextDirection !== scrollDirection) {
+      scrollDirection = nextDirection
+      directionBaselineY = previousScrollY
+    }
+    previousScrollY = currentScrollY
+
+    if (Math.abs(currentScrollY - directionBaselineY) < 12) return
+    if (currentScrollY <= 64) {
+      if (scrollDirection < 0) setHeaderVisibility(true)
+      else directionBaselineY = currentScrollY
+      return
+    }
+
+    setHeaderVisibility(scrollDirection < 0)
+  }
+
+  function queueVisibilityUpdate() {
+    if (pendingFrame !== null) return
+    pendingFrame = browserWindow.requestAnimationFrame(updateVisibilityFromScroll)
+  }
+
+  function revealForInteraction() {
+    setHeaderVisibility(true)
+    resetVisibilityBaseline()
+  }
+
+  function revealForLocationChange() {
+    initialAnchorPending = false
+    revealForInteraction()
+    syncCurrentDestination()
+  }
 
   function syncCurrentDestination() {
     const hash = browserWindow.location.hash.slice(1)
@@ -86,11 +175,25 @@ export function initializeNavigation(documentRoot: Document = document): () => v
     }, 0)
   }
 
+  function handleHeaderFocus() {
+    revealForInteraction()
+  }
+
+  function handleViewportResize() {
+    if (documentRoot.documentElement.scrollHeight <= browserWindow.innerHeight) {
+      revealForInteraction()
+    }
+  }
+
   trigger.addEventListener('click', openDialog)
   dialog.addEventListener('click', handleDialogClick)
   dialog.addEventListener('close', handleDialogClose)
-  browserWindow.addEventListener('hashchange', syncCurrentDestination)
-  browserWindow.addEventListener('popstate', syncCurrentDestination)
+  header?.addEventListener('focusin', handleHeaderFocus)
+  browserWindow.addEventListener('scroll', queueVisibilityUpdate, { passive: true })
+  browserWindow.addEventListener('resize', handleViewportResize)
+  browserWindow.addEventListener('hashchange', revealForLocationChange)
+  browserWindow.addEventListener('popstate', revealForLocationChange)
+  setHeaderVisibility(true)
   syncCurrentDestination()
   documentRoot.documentElement.classList.add('has-js')
 
@@ -98,10 +201,16 @@ export function initializeNavigation(documentRoot: Document = document): () => v
     trigger.removeEventListener('click', openDialog)
     dialog.removeEventListener('click', handleDialogClick)
     dialog.removeEventListener('close', handleDialogClose)
-    browserWindow.removeEventListener('hashchange', syncCurrentDestination)
-    browserWindow.removeEventListener('popstate', syncCurrentDestination)
+    header?.removeEventListener('focusin', handleHeaderFocus)
+    browserWindow.removeEventListener('scroll', queueVisibilityUpdate)
+    browserWindow.removeEventListener('resize', handleViewportResize)
+    browserWindow.removeEventListener('hashchange', revealForLocationChange)
+    browserWindow.removeEventListener('popstate', revealForLocationChange)
+    if (pendingFrame !== null) browserWindow.cancelAnimationFrame(pendingFrame)
+    pendingFrame = null
     if (dialog.open) dialog.close()
     trigger.setAttribute('aria-expanded', 'false')
+    header?.removeAttribute('data-nav-visibility')
     documentRoot.documentElement.classList.remove('has-js')
   }
 }

@@ -22,6 +22,10 @@ describe('SiteFooter', () => {
     expect(footer).toHaveTextContent('© 2026 Casian Criste. All rights reserved.')
     expect(nav.querySelector('[aria-current]')).toBeNull()
     expect(nav.querySelector('[data-section-link]')).toBeNull()
+    expect(
+      within(footer).queryByRole('navigation', { name: 'Contact actions' }),
+    ).not.toBeInTheDocument()
+    expect(footer.querySelector('.portfolio-actions')).toBeNull()
   })
 
   it('omits an ineligible owner and uses a year-only copyright', () => {
@@ -32,6 +36,7 @@ describe('SiteFooter', () => {
     const footer = screen.getByRole('contentinfo')
     expect(footer).toHaveTextContent('© 2026. All rights reserved.')
     expect(footer).not.toHaveTextContent('Casian Criste')
+    expect(footer.querySelector('.portfolio-actions')).toBeNull()
   })
 
   it('renders a deterministic year immediately before and after year rollover', () => {

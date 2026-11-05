@@ -36,12 +36,16 @@ export function projectPublicContact(record: ContactSourceRecord): PublicContact
   const email = publicText(record.fields.email)
   const githubUrl = publicHttpsUrl(record.fields.githubUrl)
   const linkedinUrl = publicHttpsUrl(record.fields.linkedinUrl)
+  const instagramUrl = publicHttpsUrl(record.fields.instagramUrl)
+  const cvUrl = publicHttpsUrl(record.fields.cvUrl)
 
   return {
     ...(ownerName ? { ownerName } : {}),
     ...(email ? { email } : {}),
     ...(githubUrl ? { githubUrl } : {}),
     ...(linkedinUrl ? { linkedinUrl } : {}),
+    ...(instagramUrl ? { instagramUrl } : {}),
+    ...(cvUrl ? { cvUrl } : {}),
   }
 }
 

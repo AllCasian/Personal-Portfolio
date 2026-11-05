@@ -7,10 +7,18 @@ test('primary destinations remain visible and usable without JavaScript', async 
   })
   const page = await context.newPage()
   await page.goto('/')
+  const header = page.locator('.site-header')
+  await expect(header).not.toHaveAttribute('data-nav-visibility')
+  await expect(header).toHaveCSS('position', 'static')
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
   await expect(page.getByRole('region', { name: 'About' })).toBeVisible()
   await expect(page.getByRole('link', { name: 'View Projects' })).toBeVisible()
   await expect(page.getByRole('link', { name: 'Contact Me' })).toBeVisible()
+  await expect(
+    page.getByRole('navigation', { name: 'Hero contact and social actions' }).getByRole('link', {
+      name: 'Instagram',
+    }),
+  ).toHaveAttribute('href', 'https://www.instagram.com/casiancriste')
   await page.getByRole('link', { name: 'View Projects' }).click()
   await expect(page).toHaveURL(/#portfolio$/)
   await page.getByRole('link', { name: 'Contact Me' }).click()
@@ -18,7 +26,7 @@ test('primary destinations remain visible and usable without JavaScript', async 
   await page.goto('/')
   const nav = page.getByRole('navigation', { name: 'Primary' })
   await expect(nav.getByRole('link', { name: 'Home' })).toBeVisible()
-  await expect(nav).toHaveCSS('position', 'fixed')
+  await expect(nav).toHaveCSS('position', 'static')
   await nav.getByRole('link', { name: 'About' }).click()
   await expect(page).toHaveURL(/#about$/)
   await expect(page.getByRole('heading', { level: 2, name: 'About' })).toBeVisible()

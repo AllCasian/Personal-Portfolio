@@ -43,14 +43,20 @@ test('collection and detail layouts reflow without overflow, clipping, or unreac
   }
 })
 
-test('absent approved media creates no image request or empty media frame', async ({ page }) => {
+test('absent approved project media creates no project image request or empty media frame', async ({
+  page,
+}) => {
   await page.goto('/projects/ai-recipe')
   const imageRequests: string[] = []
   page.on('request', (request) => {
-    if (request.resourceType() === 'image') imageRequests.push(request.url())
+    const isBrandPortrait = new URL(request.url()).searchParams.get('url') === '/images/me1-2.jpg'
+    if (request.resourceType() === 'image' && !isBrandPortrait) {
+      imageRequests.push(request.url())
+    }
   })
   await page.reload()
   expect(await page.locator('.project-media-frame').count()).toBe(0)
-  expect(await page.locator('img').count()).toBe(0)
+  expect(await page.locator('.project-media-frame img').count()).toBe(0)
+  expect(await page.locator('img[data-brand-avatar]').count()).toBe(2)
   expect(imageRequests).toEqual([])
 })

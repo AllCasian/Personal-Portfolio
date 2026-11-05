@@ -1,6 +1,7 @@
 import 'server-only'
 import type { ContactSourceRecord } from '@/content/contact-types'
 import { ContactSection } from '@/components/sections/contact-section'
+import { HeroSection } from '@/components/sections/hero-section'
 import { SiteFooter } from '@/components/layout/site-footer'
 import { projectPublicContact } from '@/lib/contact-content'
 
@@ -18,6 +19,7 @@ export default function PublicationBoundaryFixture() {
   return (
     <main>
       <h1>Publication boundary fixture</h1>
+      <HeroSection contactProfile={projectPublicContact(records.instagramOnly)} />
       {Object.entries(records).map(([caseName, record]) => {
         const profile = projectPublicContact(record)
         return (

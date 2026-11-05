@@ -22,7 +22,7 @@ export default function HomePage() {
       <SkipLink />
       <SiteHeader />
       <main id="main-content">
-        <HeroSection />
+        <HeroSection contactProfile={contactProfile} />
         <AboutSection />
         <div className="section-stack">
           {sections

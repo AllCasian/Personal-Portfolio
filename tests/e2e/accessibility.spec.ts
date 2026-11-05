@@ -12,6 +12,27 @@ test('landing page has no automated accessibility violations', async ({ page }) 
   await expect(page.getByRole('region', { name: 'Skills' })).toBeVisible()
 })
 
+test('portrait branding and shared action groups pass configured Axe checks on home and detail routes', async ({
+  page,
+}) => {
+  const tags = ['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa']
+  await page.goto('/')
+  await expect(page.getByRole('banner').getByRole('link', { name: 'Portfolio home' })).toBeVisible()
+  await expect(page.getByRole('banner').locator('[data-brand-avatar]').first()).toBeVisible()
+  await expect(
+    page.getByRole('navigation', { name: 'Hero contact and social actions' }),
+  ).toBeVisible()
+  await expect(page.getByRole('navigation', { name: 'Contact actions' })).toBeVisible()
+  const homeResults = await new AxeBuilder({ page }).withTags(tags).analyze()
+  expect(homeResults.violations).toEqual([])
+
+  await page.goto('/projects/drivewise')
+  await expect(page.getByRole('banner').getByRole('link', { name: 'Portfolio home' })).toBeVisible()
+  await expect(page.getByRole('banner').locator('[data-brand-avatar]').first()).toBeVisible()
+  const detailResults = await new AxeBuilder({ page }).withTags(tags).analyze()
+  expect(detailResults.violations).toEqual([])
+})
+
 test('composed Hero and About page has no axe violations', async ({ page }) => {
   await page.goto('/')
   const results = await new AxeBuilder({ page })
