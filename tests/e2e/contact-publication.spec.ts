@@ -16,7 +16,12 @@ const forbidden = [
   'SENTINEL_PRIVATE_APPROVAL_METADATA',
   'SENTINEL_UNAPPROVED_OWNER_NAME',
   'SENTINEL_PRIVATE_PROVENANCE',
+  'SENTINEL_UNAPPROVED_CV_URL',
+  'SENTINEL_UNVERIFIED_INSTAGRAM_URL',
+  'SENTINEL_UNVERIFIED_CV_URL',
+  'SENTINEL_PRIVATE_INSTAGRAM_METADATA',
 ]
+const approvedInstagram = 'https://SENTINEL_PUBLIC_APPROVED_INSTAGRAM.example/profile'
 const records = {
   verifiedApproved: record(
     'approved',
@@ -39,6 +44,20 @@ const records = {
     field('SENTINEL_PUBLIC_APPROVED_EMAIL', 'verified', 'approved'),
     field(forbidden[6], 'verified', 'unapproved'),
   ),
+  instagramOnly: record(
+    'approved',
+    field('', 'unverified', 'unapproved'),
+    field('SENTINEL_PUBLIC_APPROVED_OWNER', 'verified', 'approved'),
+    field(approvedInstagram, 'verified', 'approved'),
+    field('SENTINEL_UNAPPROVED_CV_URL', 'verified', 'unapproved'),
+  ),
+  allChannelsUnavailable: record(
+    'approved',
+    field('', 'unverified', 'unapproved'),
+    field('SENTINEL_PUBLIC_APPROVED_OWNER', 'verified', 'approved'),
+    field('SENTINEL_UNVERIFIED_INSTAGRAM_URL', 'unverified', 'approved'),
+    field('SENTINEL_UNVERIFIED_CV_URL', 'unverified', 'approved'),
+  ),
 }
 
 function field(value: string, verificationStatus: string, publicationStatus: string) {
@@ -58,6 +77,8 @@ function record(
   publicationStatus: string,
   email: ReturnType<typeof field>,
   ownerName = field('Casian Criste', 'verified', 'approved'),
+  instagramUrl = field('', 'unverified', 'unapproved'),
+  cvUrl = field('', 'unverified', 'unapproved'),
 ) {
   return {
     id: 'portfolio-owner-contact',
@@ -67,6 +88,8 @@ function record(
       email,
       githubUrl: field('', 'unverified', 'unapproved'),
       linkedinUrl: field('', 'unverified', 'unapproved'),
+      instagramUrl,
+      cvUrl,
     },
   }
 }
@@ -198,6 +221,7 @@ test.describe('contact publication boundary in an isolated Next.js app', () => {
     const directHtml = await directResponse.text()
     expect(directHtml).toContain('SENTINEL_PUBLIC_APPROVED_EMAIL')
     expect(directHtml).toContain('SENTINEL_PUBLIC_APPROVED_OWNER')
+    expect(directHtml).toContain(approvedInstagram)
     for (const sentinel of forbidden) expect(directHtml).not.toContain(sentinel)
     expect(directHtml).not.toContain('owner-confirmed')
     expect(directHtml).not.toContain('publicationStatus')
@@ -205,16 +229,34 @@ test.describe('contact publication boundary in an isolated Next.js app', () => {
     await page.goto(origin)
     await page.getByRole('link', { name: 'Run publication fixture' }).click()
     await expect(page.getByRole('heading', { name: 'Publication boundary fixture' })).toBeVisible()
+    await expect(
+      page
+        .getByRole('navigation', { name: 'Hero contact and social actions' })
+        .getByRole('link', { name: 'Instagram' }),
+    ).toHaveAttribute('href', approvedInstagram)
 
     const html = await page.content()
     expect(html).toContain('SENTINEL_PUBLIC_APPROVED_EMAIL')
     expect(html).toContain('SENTINEL_PUBLIC_APPROVED_OWNER')
+    expect(html).toContain(approvedInstagram)
     for (const sentinel of forbidden) expect(html).not.toContain(sentinel)
     expect(html).not.toContain('owner-confirmed')
     expect(html).not.toContain('publicationStatus')
     const ownerUnapprovedFooter = page.locator('[data-fixture-case="ownerUnapproved"] .site-footer')
     await expect(ownerUnapprovedFooter).toContainText(/©\s*\d{4}\. All rights reserved\./)
     await expect(ownerUnapprovedFooter).not.toContainText(forbidden[6])
+    const instagramOnly = page.locator('[data-fixture-case="instagramOnly"]')
+    await expect(instagramOnly.getByRole('link', { name: 'Instagram' })).toHaveAttribute(
+      'href',
+      approvedInstagram,
+    )
+    await expect(instagramOnly.getByRole('status')).toHaveCount(0)
+    const unavailable = page.locator('[data-fixture-case="allChannelsUnavailable"]')
+    await expect(unavailable.getByRole('status')).toHaveText(
+      'Contact links are unavailable right now.',
+    )
+    await expect(unavailable.getByRole('link', { name: 'Instagram' })).toHaveCount(0)
+    await expect(unavailable.getByRole('link', { name: 'Send email' })).toHaveCount(0)
 
     await expect.poll(() => flightResponses.length).toBeGreaterThan(0)
     for (const payload of flightResponses) {

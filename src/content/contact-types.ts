@@ -22,6 +22,8 @@ export interface ContactSourceRecord {
     readonly email: ContactField<string>
     readonly githubUrl: ContactField<string>
     readonly linkedinUrl: ContactField<string>
+    readonly instagramUrl?: ContactField<string>
+    readonly cvUrl?: ContactField<string>
   }
 }
 
@@ -30,4 +32,6 @@ export interface PublicContactProfile {
   readonly email?: string
   readonly githubUrl?: string
   readonly linkedinUrl?: string
+  readonly instagramUrl?: string
+  readonly cvUrl?: string
 }

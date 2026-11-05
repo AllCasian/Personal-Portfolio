@@ -1,5 +1,7 @@
 import { ArrowUpRight, Menu, X } from 'lucide-react'
+import Image from 'next/image'
 import { Button } from '@/components/ui/button'
+import { profile } from '@/content/profile'
 import { PrimaryLinks } from './primary-links'
 import type { NavigationContext } from '@/content/navigation'
 
@@ -29,7 +31,16 @@ export function ResponsiveMobileNavigation({ context = 'home' }: { context?: Nav
         <div className="mobile-panel">
           <div className="mobile-panel-top">
             <span className="brand-mark" aria-hidden="true">
-              YN
+              {profile.portrait ? (
+                <Image
+                  src={profile.portrait.src}
+                  alt=""
+                  fill
+                  sizes="42px"
+                  className="brand-avatar-image"
+                  data-brand-avatar
+                />
+              ) : null}
             </span>
             <h2 id="mobile-navigation-title" className="sr-only">
               Primary navigation
@@ -48,9 +59,11 @@ export function ResponsiveMobileNavigation({ context = 'home' }: { context?: Nav
           </a>
         </div>
       </dialog>
-      <nav className="no-js-mobile-links" aria-label="Primary">
-        <PrimaryLinks context={context} />
-      </nav>
+      <noscript>
+        <nav className="no-js-mobile-links" aria-label="Primary">
+          <PrimaryLinks context={context} />
+        </nav>
+      </noscript>
     </>
   )
 }

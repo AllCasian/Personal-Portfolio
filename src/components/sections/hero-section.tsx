@@ -1,9 +1,10 @@
 import { profile } from '@/content/profile'
+import type { PublicContactProfile } from '@/content/contact-types'
 import { HeroActions } from '@/components/sections/hero-actions'
 import { OptionalPortrait } from '@/components/sections/optional-portrait'
 import { PortraitFallback } from '@/components/sections/portrait-fallback'
 
-export function HeroSection() {
+export function HeroSection({ contactProfile }: { contactProfile: PublicContactProfile }) {
   return (
     <section className="hero content-width" id="home" aria-labelledby="hero-title" data-motion-hero>
       <div className="hero-copy">
@@ -23,7 +24,7 @@ export function HeroSection() {
           </span>
         </h1>
         <p className="hero-intro">{profile.introduction}</p>
-        <HeroActions />
+        <HeroActions profile={contactProfile} />
       </div>
       {profile.portrait ? (
         <OptionalPortrait src={profile.portrait.src} alt={profile.portrait.alt} />
@@ -34,9 +35,6 @@ export function HeroSection() {
           <PortraitFallback />
         </div>
       )}
-      <p className="hero-index" aria-hidden="true">
-        01 <span /> INTRODUCTION
-      </p>
     </section>
   )
 }

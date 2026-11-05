@@ -2,9 +2,16 @@ import { render, screen, within } from '@testing-library/react'
 import HomePage from '@/app/page'
 import { HeroSection } from '@/components/sections/hero-section'
 
+const approvedProfile = {
+  email: 'cristecasian@gmail.com',
+  githubUrl: 'https://github.com/AllCasian',
+  linkedinUrl: 'https://www.linkedin.com/in/casian-criste-b65582263/',
+  instagramUrl: 'https://www.instagram.com/casiancriste',
+}
+
 describe('HeroSection', () => {
   it('renders the confirmed identity, role, and concise professional introduction', () => {
-    render(<HeroSection />)
+    render(<HeroSection contactProfile={approvedProfile} />)
     const heading = screen.getByRole('heading', { level: 1 })
     expect(heading).toHaveTextContent('Casian Criste')
     expect(heading).toHaveTextContent('Junior Data Engineer')
@@ -25,6 +32,7 @@ describe('HeroSection', () => {
     expect(document.querySelector('#about')).toBeInTheDocument()
     expect(document.querySelector('#portfolio')).toBeInTheDocument()
     expect(document.querySelector('#contact')).toBeInTheDocument()
+    expect(document.querySelector('.hero-index')).not.toBeInTheDocument()
     expect(
       within(document.querySelector('#about') as HTMLElement).getAllByRole('heading', {
         level: 3,

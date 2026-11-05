@@ -1,12 +1,9 @@
 import { ArrowUpRight } from 'lucide-react'
-import { profile } from '@/content/profile'
+import type { PublicContactProfile } from '@/content/contact-types'
 import { ButtonLink } from '@/components/ui/button'
+import { PortfolioActions } from './portfolio-actions'
 
-export function HeroActions() {
-  const supportingLinks = [profile.resume, profile.github, profile.linkedIn].filter(
-    (link): link is NonNullable<typeof link> => Boolean(link),
-  )
-
+export function HeroActions({ profile }: { profile: PublicContactProfile }) {
   return (
     <div className="hero-action-group">
       <div className="hero-actions">
@@ -17,15 +14,11 @@ export function HeroActions() {
           Contact Me
         </ButtonLink>
       </div>
-      {supportingLinks.length > 0 ? (
-        <ul className="hero-supporting-links" aria-label="Additional professional links">
-          {supportingLinks.map((link) => (
-            <li key={link.href}>
-              <a href={link.href}>{link.label}</a>
-            </li>
-          ))}
-        </ul>
-      ) : null}
+      <PortfolioActions
+        profile={profile}
+        className="hero-social-actions"
+        label="Hero contact and social actions"
+      />
     </div>
   )
 }
